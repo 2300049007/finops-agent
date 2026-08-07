@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinOps Agent - Autonomous Financial Operations Console</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-icon">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="brand-text">
+          <h2>FinOps Console</h2>
+          <span>Autonomous Operator v1.2</span>
+        </div>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-tab="overview">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard Overview</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="simulator">
+          <i class="fa-solid fa-terminal"></i>
+          <span>Task Simulator</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="hitl">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>HITL Queue</span>
+          <span class="badge" id="hitl-badge">0</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="logs">
+          <i class="fa-solid fa-list-ul"></i>
+          <span>Audit Logs</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="settings">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Agent Configuration</span>
+        </a>
+      </nav>
+
+      <div class="compliance-tag">
+        <div class="shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+          <h4>DPDP Act / RBI Compliant</h4>
+          <p>Strict data minimization & local masking enabled</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar -->
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">Dashboard Overview</h1>
+          <p id="page-subtitle">Real-time metrics and autonomous operations overview.</p>
+        </div>
+        <div class="system-status">
+          <span class="status-pulse"></span>
+          <span class="status-text">Agent Online (Confidence Threshold: <strong id="header-conf-threshold">85%</strong>)</span>
+        </div>
+      </header>
+
+      <!-- Viewports -->
+      <div class="view-pane">
+        
+        <!-- SECTION: OVERVIEW -->
+        <section id="tab-overview" class="tab-content active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon bg-blue"><i class="fa-solid fa-microchip"></i></div>
+              <div class="stat-details">
+                <h3>Total Processed</h3>
+                <h2 id="stat-total-tasks">0</h2>
+                <span class="trend neutral">Life cycle count</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-green"><i class="fa-solid fa-bolt"></i></div>
+              <div class="stat-details">
+                <h3>Autonomous Run</h3>
+                <h2 id="stat-auto-tasks">0</h2>
+                <span class="trend positive" id="stat-auto-pct">0% of total</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-amber"><i class="fa-solid fa-people-arrows"></i></div>
+              <div class="stat-details">
+                <h3>Escalated to HITL</h3>
+                <h2 id="stat-hitl-tasks">0</h2>
+                <span class="trend warning" id="stat-hitl-pct">0% of total</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon bg-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="stat-details">
+                <h3>Declined / Blocked</h3>
+                <h2 id="stat-declined-tasks">0</h2>
+                <span class="trend negative" id="stat-declined-pct">0% of total</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="layout-split">
+            <!-- Left: Domain breakdown and agent logs preview -->
+            <div class="panel-card flex-2">
+              <div class="panel-header">
+                <h3>Domain Distribution</h3>
+                <span class="panel-action">Last 10 Actions</span>
+              </div>
+              <div class="domain-bars">
+                <div class="domain-bar-row">
+                  <div class="domain-label">Customer Support</div>
+                  <div class="bar-container">
+                    <div class="bar bg-blue" id="bar-support" style="width: 0%"></div>
+                  </div>
+                  <div class="domain-count" id="count-support">0</div>
+                </div>
+                <div class="domain-bar-row">
+                  <div class="domain-label">Payments</div>
+                  <div class="bar-container">
+                    <div class="bar bg-green" id="bar-payments" style="width: 0%"></div>
+                  </div>
+                  <div class="domain-count" id="count-payments">0</div>
+                </div>
+                <div class="domain-bar-row">
+                  <div class="domain-label">Fraud Investigation</div>
+                  <div class="bar-container">
+                    <div class="bar bg-red" id="bar-fraud" style="width: 0%"></div>
+                  </div>
+                  <div class="domain-count" id="count-fraud">0</div>
+                </div>
+                <div class="domain-bar-row">
+                  <div class="domain-label">Internal Ops</div>
+                  <div class="bar-container">
+                    <div class="bar bg-purple" id="bar-ops" style="width: 0%"></div>
+                  </div>
+                  <div class="domain-count" id="count-ops">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: HITL summary preview -->
+            <div class="panel-card flex-1 bg-gradient">
+              <div class="panel-header">
+                <h3>HITL Queue Summary</h3>
+                <a href="#" class="view-all-link" data-tab-trigger="hitl">View Queue</a>
+              </div>
+              <div class="hitl-preview-container" id="hitl-preview-list">
+                <!-- Injected dynamically -->
+                <div class="empty-state">
+                  <i class="fa-solid fa-clipboard-check"></i>
+                  <p>Human Approval Queue is empty.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Recent logs -->
+          <div class="panel-card margin-top">
+            <div class="panel-header">
+              <h3>Real-Time Audit Trail</h3>
+              <a href="#" class="view-all-link" data-tab-trigger="logs">View All Audit Logs</a>
+            </div>
+            <div class="audit-log-terminal-preview" id="recent-logs-terminal">
+              <!-- Logs injected here -->
+              <div class="empty-state">
+                <i class="fa-solid fa-database"></i>
+                <p>No transactions processed yet. Run a simulation to populate the audit logs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECTION: SIMULATOR -->
+        <section id="tab-simulator" class="tab-content">
+          <div class="layout-split">
+            <!-- Left Panel: Preset Select & Inputs -->
+            <div class="panel-card flex-1">
+              <div class="panel-header">
+                <h3>Choose or Design a Task</h3>
+              </div>
+              
+              <div class="preset-selector-group">
+                <label for="scenario-presets"><i class="fa-solid fa-list-check"></i> Select a Predefined Scenario</label>
+                <select id="scenario-presets" class="form-control">
+                  <option value="" disabled selected>-- Select a Scenario --</option>
+                  <!-- Dynamically filled -->
+                </select>
+              </div>
+
+              <div class="divider"><span>OR DEFINE A CUSTOM TASK</span></div>
+
+              <form id="custom-task-form">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="task-domain">Domain</label>
+                    <select id="task-domain" class="form-control" required>
+                      <option value="Customer Support">Customer Support</option>
+                      <option value="Payments">Payments</option>
+                      <option value="Fraud">Fraud Investigation</option>
+                      <option value="Internal Ops">Internal Ops</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="task-type">Task Type</label>
+                    <input type="text" id="task-type" class="form-control" placeholder="e.g. Refund Request, Failed Transaction" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="task-urgency">Urgency</label>
+                    <select id="task-urgency" class="form-control">
+                      <option value="Low">Low</option>
+                      <option value="Medium" selected>Medium</option>
+                      <option value="High">High</option>
+                      <option value="Critical">Critical</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="task-amount">Amount (₹)</label>
+                    <input type="number" id="task-amount" class="form-control" placeholder="0 if not applicable" value="0">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="task-desc">Task Description</label>
+                  <textarea id="task-desc" class="form-control" rows="3" placeholder="Provide details of what the user is asking..." required></textarea>
+                </div>
+
+                <div class="form-section-header">Customer Profile & Flags</div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="cust-name">Customer Name</label>
+                    <input type="text" id="cust-name" class="form-control" placeholder="e.g. Ramesh Chandra" value="Jane Doe">
+                  </div>
+                  <div class="form-group">
+                    <label for="cust-aadhaar">Aadhaar (PII)</label>
+                    <input type="text" id="cust-aadhaar" class="form-control" placeholder="12-digit number" value="1234-5678-9012">
+                  </div>
+                  <div class="form-group">
+                    <label for="cust-pan">PAN (PII)</label>
+                    <input type="text" id="cust-pan" class="form-control" placeholder="10-digit PAN" value="ABCDE1234F">
+                  </div>
+                  <div class="form-group-checkboxes">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="cust-vulnerable">
+                      <span>Vulnerable Customer (Senior Citizen/Disabled)</span>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="cust-disputed">
+                      <span>Disputed / Active complaints</span>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="cust-investigation">
+                      <span>Under Active Investigation</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-section-header">Simulated Database Context</div>
+                <div class="form-grid">
+                  <div class="form-group full-width">
+                    <label for="db-crm">CRM History & prior logs</label>
+                    <textarea id="db-crm" class="form-control" rows="2" placeholder="e.g. Active dispute on previous ticket, Gold loyalty tier..."></textarea>
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="db-payment">Payment platform logs</label>
+                    <textarea id="db-payment" class="form-control" rows="2" placeholder="e.g. Transaction TXN-5544 status FAILED due to timeout..."></textarea>
+                  </div>
+                  <div class="form-group full-width">
+                    <label for="db-fraud">Prior fraud investigation logs</label>
+                    <textarea id="db-fraud" class="form-control" rows="2" placeholder="e.g. Risk score: 10%. Login locations match billing..."></textarea>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full margin-top">
+                  <i class="fa-solid fa-play"></i> Run FinOps Reasoning Loop
+                </button>
+              </form>
+            </div>
+
+            <!-- Right Panel: Core Reasoning Loop Tracker -->
+            <div class="panel-card flex-1 bg-glass">
+              <div class="panel-header">
+                <h3>Core Reasoning Loop Visualizer</h3>
+                <span class="loop-status-tag idle" id="loop-global-status">Idle</span>
+              </div>
+
+              <div class="reasoning-loop-steps">
+                <!-- STEP 1: CLASSIFY -->
+                <div class="loop-step" id="step-classify">
+                  <div class="step-icon"><i class="fa-solid fa-tag"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">1. Classify Task</div>
+                    <div class="step-detail">Identify domain, task type, and urgency.</div>
+                    <div class="step-output" id="out-classify">Awaiting task initiation...</div>
+                  </div>
+                </div>
+
+                <!-- STEP 2: GATHER CONTEXT -->
+                <div class="loop-step" id="step-context">
+                  <div class="step-icon"><i class="fa-solid fa-database"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">2. Gather Context</div>
+                    <div class="step-detail">Query CRM history, transaction records, and notes.</div>
+                    <div class="step-output" id="out-context">Awaiting task initiation...</div>
+                  </div>
+                </div>
+
+                <!-- STEP 3: RISK ASSESSMENT -->
+                <div class="loop-step" id="step-risk">
+                  <div class="step-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">3. Assess Risk</div>
+                    <div class="step-detail">Check against HITL guardrails, thresholds, and customer flags.</div>
+                    <div class="step-output" id="out-risk">Awaiting task initiation...</div>
+                  </div>
+                </div>
+
+                <!-- STEP 4: DECIDE -->
+                <div class="loop-step" id="step-decide">
+                  <div class="step-icon"><i class="fa-solid fa-code-branch"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">4. Decide Route</div>
+                    <div class="step-detail">Determine if autonomous execution is safe or requires human review.</div>
+                    <div class="step-output" id="out-decide">Awaiting task initiation...</div>
+                  </div>
+                </div>
+
+                <!-- STEP 5: EXPLAIN -->
+                <div class="loop-step" id="step-explain">
+                  <div class="step-icon"><i class="fa-solid fa-quote-left"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">5. Explain (Non-Technical Rationale)</div>
+                    <div class="step-detail">Generate clear, regulatory/compliance statement with masked PII.</div>
+                    <div class="step-output" id="out-explain">Awaiting task initiation...</div>
+                  </div>
+                </div>
+
+                <!-- STEP 6: LOG & ACT -->
+                <div class="loop-step" id="step-log-act">
+                  <div class="step-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                  <div class="step-body">
+                    <div class="step-title">6. Log & Execute</div>
+                    <div class="step-detail">Publish structured audit log and perform action or escalate.</div>
+                    <div class="step-output" id="out-log-act">Awaiting task initiation...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECTION: HITL QUEUE -->
+        <section id="tab-hitl" class="tab-content">
+          <div class="hitl-header-stats">
+            <div class="hitl-stat">
+              <span class="hitl-stat-label">Pending Approval</span>
+              <span class="hitl-stat-value text-amber" id="hitl-count-pending">0</span>
+            </div>
+            <div class="hitl-stat">
+              <span class="hitl-stat-label">SLA Breached (>24h)</span>
+              <span class="hitl-stat-value text-red" id="hitl-count-sla">0</span>
+            </div>
+            <div class="hitl-stat">
+              <span class="hitl-stat-label">Approved Today</span>
+              <span class="hitl-stat-value text-green" id="hitl-count-approved">0</span>
+            </div>
+          </div>
+
+          <div class="hitl-queue-grid" id="hitl-queue-container">
+            <!-- Dynamically populated HITL ready-to-decide cards -->
+            <div class="empty-state full-width">
+              <i class="fa-solid fa-people-roof"></i>
+              <h3>Human-in-the-Loop Queue is Empty</h3>
+              <p>Great job! There are no operations tasks pending human review. Run simulator scenarios to trigger escalations.</p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECTION: LOGS -->
+        <section id="tab-logs" class="tab-content">
+          <div class="logs-toolbar">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="logs-search" placeholder="Search by case ID, customer, description...">
+            </div>
+            <div class="filter-group">
+              <label for="logs-filter-domain">Domain:</label>
+              <select id="logs-filter-domain">
+                <option value="All">All Domains</option>
+                <option value="Customer Support">Customer Support</option>
+                <option value="Payments">Payments</option>
+                <option value="Fraud">Fraud</option>
+                <option value="Internal Ops">Internal Ops</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="logs-filter-outcome">Outcome:</label>
+              <select id="logs-filter-outcome">
+                <option value="All">All Outcomes</option>
+                <option value="Executed (Autonomous)">Executed (Autonomous)</option>
+                <option value="Pending Approval">Pending Approval</option>
+                <option value="Approved by Human">Approved by Human</option>
+                <option value="Declined by Human">Declined by Human</option>
+              </select>
+            </div>
+            <button id="btn-export-logs" class="btn btn-secondary">
+              <i class="fa-solid fa-download"></i> Export Logs
+            </button>
+          </div>
+
+          <div class="audit-terminal-container">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">audit_log_exporter.sh</div>
+            </div>
+            <div class="terminal-body" id="audit-logs-full-terminal">
+              <!-- Logs print in full block format -->
+              <div class="empty-state">
+                <i class="fa-solid fa-file-shield"></i>
+                <p>No audit logs available. Process a simulated or custom task to write logs.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- SECTION: SETTINGS -->
+        <section id="tab-settings" class="tab-content">
+          <div class="layout-split">
+            <!-- Left: Rule parameters -->
+            <div class="panel-card flex-2">
+              <div class="panel-header">
+                <h3>FinOps Policy & Thresholds</h3>
+              </div>
+
+              <div class="settings-form">
+                <div class="settings-section">
+                  <h4><i class="fa-solid fa-money-bill-transfer"></i> Autonomous Refund Limits</h4>
+                  <p class="settings-desc">Specify the maximum transaction refund value the agent can execute without a human confirmation.</p>
+                  <div class="form-group flex-row">
+                    <label for="setting-refund-threshold">Refund Limit (₹)</label>
+                    <input type="number" id="setting-refund-threshold" class="form-control width-medium" value="5000" min="0">
+                  </div>
+                </div>
+
+                <div class="settings-section">
+                  <h4><i class="fa-solid fa-percent"></i> Confidence Threshold</h4>
+                  <p class="settings-desc">Tasks where the AI's intent-classification or risk-assessment confidence drops below this rate must escalate immediately.</p>
+                  <div class="form-group">
+                    <div class="flex-space-between">
+                      <label for="setting-confidence-slider">Minimum Confidence: <strong id="val-conf-threshold">85%</strong></label>
+                    </div>
+                    <input type="range" id="setting-confidence-slider" min="50" max="100" value="85" class="slider-control">
+                  </div>
+                </div>
+
+                <div class="settings-section">
+                  <h4><i class="fa-solid fa-ban"></i> Hard Stop Rules (Always Escalate)</h4>
+                  <p class="settings-desc">Force the agent to trigger HITL escalation whenever these criteria are met, regardless of refund value.</p>
+                  <div class="checkbox-list">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="setting-escalate-vulnerable" checked>
+                      <span>Vulnerable Customer Flag (DPDP compliance priority)</span>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="setting-escalate-fraud" checked>
+                      <span>Any task classified under the 'Fraud' domain</span>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="setting-escalate-disputes" checked>
+                      <span>Customers with active complaints or disputing details</span>
+                    </label>
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="setting-escalate-account-actions" checked>
+                      <span>Irreversible account changes (freezes, suspensions, closures)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="button-row margin-top">
+                  <button id="btn-save-settings" class="btn btn-primary">Save Policy Changes</button>
+                  <button id="btn-reset-simulator" class="btn btn-danger">Reset Simulator State</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Compliance & Rule Explanation -->
+            <div class="panel-card flex-1 bg-gradient">
+              <h3>Compliance Overview</h3>
+              <div class="compliance-note margin-top">
+                <div class="note-title"><i class="fa-solid fa-shield"></i> Digital Personal Data Protection Act, 2023</div>
+                <p>The system enforces **Data Minimization** and **Purpose Limitation**. PII elements such as Aadhaar number (12 digits) and PAN (10 alphanumeric digits) are automatically masked in explanations and logs before storage.</p>
+              </div>
+              <div class="compliance-note">
+                <div class="note-title"><i class="fa-solid fa-circle-exclamation"></i> RBI Grievance Directives</div>
+                <p>Payment failures and unauthorized transactions require a strict escalation SLA and precise logging of underlying error codes (`ERR_NETWORK_TIMEOUT`, etc.) to support downstream audits.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Action processed successfully</div>
+
+  <!-- Scripts -->
+  <script src="scenarios.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

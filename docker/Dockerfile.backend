@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+# Install system packages required for PostgreSQL compiling, tesseract-ocr, and pdf parsing
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    tesseract-ocr \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy requirements and install
+COPY backend/requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend files and script folder
+COPY backend/ backend/
+COPY scripts/ scripts/
+
+ENV PYTHONPATH=/app
+
+EXPOSE 8000

@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package descriptors and lockfiles
+COPY package.json ./
+
+# Install packages
+RUN npm install
+
+# Copy source code files
+COPY . .
+
+# Build NextJS production distribution
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]

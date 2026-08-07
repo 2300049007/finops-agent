@@ -1,0 +1,17 @@
+{
+  "name": "finops-agent",
+  "version": "1.0.0",
+  "description": "Autonomous Financial Operations Agent Console and Simulator",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server -p 8080 -o"
+  },
+  "keywords": [
+    "finops",
+    "agent",
+    "simulation",
+    "operations"
+  ],
+  "author": "FinOps Team",
+  "license": "MIT"
+}
