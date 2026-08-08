@@ -140,6 +140,32 @@ def seed_database():
             transactions.append(tx)
         db.commit()
 
+        # 3B. Seed Payment Gateway Records
+        print("Seeding payment gateway records...")
+
+        for tx in transactions:
+            payment = Payment(
+                gateway=random.choice([
+                    "Razorpay",
+                    "Stripe",
+                    "PayU",
+                    "Cashfree"
+                ]),
+                transaction_id=tx.payment_id,
+                status=tx.status,
+                details={
+                    "payment_id": tx.payment_id,
+                    "amount": tx.amount,
+                    "currency": tx.currency,
+                    "merchant": tx.merchant,
+                    "customer_id": tx.customer_id
+                },
+                created_at=tx.created_at
+            )
+            db.add(payment)
+
+        db.commit()
+
         # 4. Seed 300 Tickets
         print("Seeding 300 support tickets...")
         tickets = []
