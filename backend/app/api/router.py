@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import String
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional, Dict, Any
@@ -121,7 +122,7 @@ def get_ticket_details(ticket_id: int, db: Session = Depends(get_db), current_us
         raise HTTPException(status_code=404, detail="Ticket not found")
         
     audit_logs = db.query(AuditLog).filter(
-        AuditLog.details.like(f"%Ticket #{ticket_id}%") | AuditLog.request_payload.like(f"%{ticket_id}%")
+        AuditLog.details.like(f"%Ticket #{ticket_id}%") | cast(AuditLog.request_payload, String).like(f"%{ticket_id}%")
     ).all()
     
     return {
