@@ -13,6 +13,7 @@ from backend.app.db.session import get_db
 from backend.app.db.models import (
     User, Customer, SupportTicket, Transaction, FraudCase, ApprovalRequest, AuditLog, Refund, KnowledgeBase
 )
+from backend.app.config import settings
 from backend.app.auth import (
     create_access_token, get_password_hash, verify_password, get_current_user,
     admin_required, manager_required, analyst_required
