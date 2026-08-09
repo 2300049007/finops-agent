@@ -40,11 +40,26 @@ export default function AuditLogsDashboard() {
     }
   };
 
-  const handleExportCSV = () => {
-    // Standard trigger for browser downloading CSV
-    const url = api.exportAuditLogsUrl();
-    window.open(url, "_blank");
-  };
+ const handleExportCSV = async () => {
+  try {
+    const blob = await api.exportAuditLogs();
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "finops_audit_export.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("CSV export failed:", error);
+    alert("Failed to export audit logs.");
+  }
+};
 
   const toggleExpandLog = (id: number) => {
     setExpandedLog(prev => (prev === id ? null : id));

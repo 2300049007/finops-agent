@@ -277,14 +277,34 @@ def trigger_refund(refund_in: RefundCreate, db: Session = Depends(get_db), curre
     
     # Audit log
     audit = AuditLog(
-        action="Manual Refund Processed",
-        category="Payment",
-        details=f"Manual refund of ₹{refund_in.amount} for payment {refund_in.payment_id} executed by manager: {current_user.full_name}.",
-        confidence=1.0,
-        reason=refund_in.reason,
-        user_id=current_user.email,
-        execution_status="Success"
-    )
+    action="Manual Refund Processed",
+    category="Payment",
+    details=(
+        f"Manual refund of ₹{refund_in.amount} for payment "
+        f"{refund_in.payment_id} executed by manager: "
+        f"{current_user.full_name}."
+    ),
+    confidence=1.0,
+    reason=refund_in.reason,
+    user_id=current_user.email,
+    execution_status="Success",
+    request_payload={
+        "payment_id": refund_in.payment_id,
+        "amount": float(refund_in.amount),
+        "action": "refund",
+        "operator": current_user.email,
+        "operator_name": current_user.full_name,
+        "operator_role": getattr(current_user, "role", "MANAGER"),
+        "justification": refund_in.reason,
+    },
+    response_payload={
+        "success": True,
+        "status": "Refunded",
+        "payment_id": refund_in.payment_id,
+        "refund_amount": float(refund_in.amount),
+        "refund_id": refund.id,
+    }
+)
     db.add(audit)
     db.commit()
     

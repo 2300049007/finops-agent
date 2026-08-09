@@ -153,10 +153,18 @@ export const api = {
     return res.json();
   },
 
-  exportAuditLogsUrl(): string {
-    const token = typeof window !== 'undefined' ? localStorage.getItem("finops_token") : "";
-    return `${BASE_URL}/audit/export?token=${token}`; // or headers downloaded via anchor trigger
-  },
+  async exportAuditLogs(): Promise<Blob> {
+  const res = await fetch(`${BASE_URL}/audit/export`, {
+    headers: getHeaders(),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to export audit logs");
+  }
+
+  return res.blob();
+},
 
   // --- SETTINGS ---
   async getSettings(): Promise<any> {
